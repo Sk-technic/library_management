@@ -64,7 +64,7 @@ router.get(['/dashboard', '/dashboard/addbooks'], async (req, res) => {
         }
 
         res.render('dashboard', {
-            title: "Library Management Dashboard",
+            title: "Dashboard",
             content: 'dashboard',
             user: user,
             users: users, // Only if on dashboard

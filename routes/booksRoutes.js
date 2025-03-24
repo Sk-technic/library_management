@@ -212,7 +212,7 @@ router.get('/books-allot',checkLibrarian, async (req, res) => {
 
     let users  = [];
       [users] = await db.query("SELECT id, name, email, profile_picture, role FROM users");
-    res.render('borrow_return', { title: "Borrow & Return Books",content:'Borrow & Return Books', user, books, borrowedBooks,users:users});
+    res.render('borrow_return', { title: "Allot Books",content:'Borrow & Return Books', user, books, borrowedBooks,users:users});
 
     
 });
