@@ -58,7 +58,7 @@ The application will run at `http://localhost:3000`
 ## 📸 Screenshots
 
 ### Homepage View
-![Homepage](./assets/Screenshot%202025-03-24%20140012.png)
+![Homepage](./assets/homepage.png)
 
 ## 📜 License
 This project is open-source and available under the [MIT License](LICENSE).
