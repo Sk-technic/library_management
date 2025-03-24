@@ -139,7 +139,7 @@ router.get('/edit-book/:id',checkLibrarian, async (req, res) => {
             return res.status(404).send("Book not found");
         }
 
-        res.render('edit-book', {
+        res.render('edit-books', {
             title: "Edit Book",
             book: bookResult[0],
             content: "Edit Book"  // Send book details to EJS
