@@ -54,7 +54,11 @@ npm start
 The application will run at `http://localhost:3000`
 
 ## 📸 Screenshots
-(Include screenshots of the UI here)
+
+## 📸 Screenshots
+
+### Homepage View
+![Homepage](./assets/Screenshot%202025-03-24%20140012.png)
 
 ## 📜 License
 This project is open-source and available under the [MIT License](LICENSE).
