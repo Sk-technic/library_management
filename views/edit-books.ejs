@@ -1,0 +1,132 @@
+<%- include('layout') %>
+<main class="w-full flex justify-center items-center">
+
+    <div class="w-[90%] mt-10 p-6 bg-white shadow-md rounded-lg">
+        <h2 class="text-2xl font-bold mb-4 text-center">
+        <i class="fas fa-edit text-purple-600"></i> Edit Book Details
+    </h2>
+
+    <form action="/edit-book/<%= book.id %>" method="POST"
+        enctype="multipart/form-data" 
+        class="grid grid-cols-2  gap-4 w-full">
+        <div class="flex flex-col gap-2">
+
+            <label class="w-full text-sm font-semibold">Book Title</label>
+            <input type="text" name="title" value="<%= book.title %>" required
+            class="p-2 border w-full rounded ">
+        </div>
+        <div class="flex flex-col gap-2">
+            
+            <label class="w-full text-sm font-semibold">Author Name</label>
+            <input type="text" name="author" value="<%= book.author %>" required
+            class="p-2 border rounded w-full">
+        </div>
+        
+        <div class="flex flex-col gap-2">
+            
+            <label class="w-full text-sm font-semibold">Genre</label>
+            <select name="genre" class="p-2 border rounded w-full">
+                <option value="<%= book.genre %>" selected><%= book.genre
+                    %></option>
+                                
+                    <!-- General Categories -->
+                    <optgroup label="General Genres">
+                        <option name="genre" value="fiction">Fiction</option>
+                        <option name="genre" value="non-fiction">Non-Fiction</option>
+                        <option name="genre" value="mystery">Mystery</option>
+                        <option name="genre" value="fantasy">Fantasy</option>
+                        <option name="genre" value="science-fiction">Science Fiction</option>
+                        <option name="genre" value="biography">Biography</option>
+                        <option name="genre" value="history">History</option>
+                        <option name="genre" value="self-help">Self-Help</option>
+                        <option name="genre" value="romance">Romance</option>
+                        <option name="genre" value="horror">Horror</option>
+                    </optgroup>
+                    
+                    <!-- College/School Library Categories -->
+                    <optgroup label="Academic & Educational">
+                        <option name="genre" value="mathematics">Mathematics</option>
+                        <option name="genre" value="physics">Physics</option>
+                        <option name="genre" value="chemistry">Chemistry</option>
+                        <option name="genre" value="biology">Biology</option>
+                        <option name="genre" value="computer-science">Computer Science</option>
+                        <option name="genre" value="engineering">Engineering</option>
+                        <option name="genre" value="medicine">Medicine</option>
+                        <option name="genre" value="law">Law</option>
+                        <option name="genre" value="business">Business & Management</option>
+                        <option name="genre" value="economics">Economics</option>
+                        <option name="genre" value="psychology">Psychology</option>
+                        <option name="genre" value="education">Education</option>
+                        <option name="genre" value="political-science">Political Science</option>
+                        <option name="genre" value="literature">Literature</option>
+                    </optgroup>
+            </select>
+
+        </div>
+
+        <div  class="flex flex-col gap-2">
+            
+            <label class="w-full text-sm font-semibold">ISBN Number</label>
+            <input type="text" name="isbn" value="<%= book.isbn %>" required
+            class="p-2 border w-full rounded ">
+        </div>
+        
+        <div  class="flex flex-col gap-2">
+            
+            <label class="w-full text-sm font-semibold">Publication
+                Year</label>
+            <input type="number" name="publication_year"
+                value="<%= book.publication_year %>"
+                class="p-2 border rounded w-full">
+        </div>
+
+        <div  class="flex flex-col gap-2">
+
+            <label class="w-full text-sm font-semibold">Publisher</label>
+            <input type="text" name="publisher" value="<%= book.publisher %>"
+                class="p-2 border rounded w-full">
+            </div>
+
+        <div  class="flex flex-col gap-2 " >
+            
+            <label class="w-full text-sm font-semibold">Available
+                Copies</label>
+                <input type="number" name="copies_available"
+                value="<%= book.copies_available %>" required
+                class="p-2 border rounded w-full">
+            </div>
+            
+            <div  class="flex flex-col gap-2 " >
+            
+                <label for="add-image" class="w-full hover:cursor-pointer text-sm font-semibold">Add cover image
+                    </label>
+                    <!-- <span class="p-2 border hover:cursor-not-allowed rounded w-full">
+                        <i class="fa-solid fa-image"></i>
+                        <%= book.cover_image %>
+                    </span> -->
+                    <input type="file" id="add-image" accept="image/*" name="cover_image"
+                    required
+                    class=" p-2 border rounded w-full">
+                </div>
+
+                <%= console.log(book.cover_image) %>
+            <div  class="flex flex-col gap-2">
+                
+                <button type="submit"
+                class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+                Update Book
+            </button>
+        </div>
+
+        <div  class="flex flex-col gap-2">
+            <a href="/getBooks"
+            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition">
+                Cancel
+            </a>
+            
+        </div>
+        
+    </form>
+</div>
+
+</main>

@@ -1,0 +1,110 @@
+
+<%- include('layout') %>
+<div class="w-full flex justify-between items-center px-5 bg-white">
+    <div>
+    
+        <%- include('breadcumb') %>
+    </div>
+    <div class="w-fit ">
+
+        <h2 class="text-xl  font-bold  text-center"><%= content %> <span class="text-purple-600"><i class="fas fa-book-reader mr-2"></i>library</span></h2>
+    </div>
+        <!-- Search Input -->
+         <div class=" flex w-[25%] justify-end items-center">
+
+             <div id="searchButton" class="group hover:cursor-pointer relative w-[73%] transition-all duration-1000 hover:w-[100%]">
+                 <div class="border-2 border-gray-200 text-md text-zinc-700 bg-white  flex justify-between rounded-full items-center py-2 transition-all duration-300 group-hover:shadow-lg group-focus-within:border-purple-600">
+                     <input type="text" id="findbook" class="ml-5 outline-none w-full px-2 border-none bg-transparent transition-all duration-300 focus:w-72" 
+                     placeholder="Search by student, email, or book...">
+                     <i class="fa-solid fa-magnifying-glass text-gray-400 transition-transform duration-300 mr-5 group-hover:scale-110 group-hover:text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <main class="flex justify-center w-full h-[450px] mt-[50px] items-center p-5">
+
+        <div class="relative w-full  p-6 bg-white shadow-zinc-500 shadow-md rounded-lg">
+            
+ 
+    
+
+    <% if (borrowedDetails.length === 0) { %>
+        <p class="text-center text-gray-600">No books have been borrowed yet.</p>
+    <% } else { %>
+    
+        
+            <span class="ml-1 py-2">All students details </span>
+   
+        <div class="overflow-y-auto h-[450px] ">
+          
+        
+            <table id="booksbody" class="w-full border-collapse border border-gray-300 shadow-sm rounded-lg">
+                <thead class="sticky top-0">
+                    <tr class="bg-purple-500 text-white">
+                        <th class="py-3 px-4 text-left">Sr. No</th>
+                        <th class="py-3 px-4 text-left">User Name</th>
+                        <th class="py-3 px-4 text-left">Email</th>
+                        <th class="py-3 px-4 text-left">Book Title</th>
+                        <th class="py-3 px-4 text-left">Author</th>
+                        <th class="py-3 px-4 text-left">Borrow Date</th>
+                        <th class="py-3 px-4 text-left">Return Date</th>
+                        <th class="py-3 px-4 text-left">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <% borrowedDetails.forEach((borrow, index) => { %>
+                        <tr class="border-t border-gray-300 hover:bg-gray-200 duration-300">
+                            <td class="py-3 px-4"><%= index + 1 %></td>
+                            <td class="search-column py-3 px-4 font-semibold"><%= borrow.user_name %></td>
+                            <td class="search-column py-3 px-4 text-gray-600"><%= borrow.email %></td>
+                            <td class="search-column py-3 px-4 book-title"><%= borrow.book_title %></td>
+                            <td class="py-3 px-4"><%= borrow.author %></td>
+                            <td class="search-column py-3 px-4 text-gray-700"><%= new Date(borrow.borrow_date).toLocaleDateString() %></td>
+                            <td class="search-column py-3 px-4 text-gray-700">
+                                <%= borrow.return_date ? new Date(borrow.return_date).toLocaleDateString() : 'Not Returned' %>
+                            </td>
+                            <td class="py-3 px-4">
+                                <% if (borrow.status === 'borrowed') { %>
+                                    <span class="search-column text-yellow-600 font-semibold">Borrowed</span>
+                                <% } else { %>
+                                    <span class="search-column text-green-600 font-semibold">Returned</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            
+            <script>
+                document.getElementById("findbook").addEventListener("keyup", function () {
+                    let searchTerm = this.value.toLowerCase();
+                    let rows = document.querySelectorAll("#booksbody tr");
+            
+                    rows.forEach(row => {
+                        let columns = row.querySelectorAll(".search-column"); // Get only Title, Genre, and Year columns
+                        let matchFound = false;
+                        
+                        columns.forEach(cell => {
+                            let originalText = cell.getAttribute("data-original") || cell.innerText; // Store original text if not already set
+                            cell.setAttribute("data-original", originalText); 
+            
+                            let lowerText = originalText.toLowerCase();
+                            
+                            if (searchTerm && lowerText.includes(searchTerm)) {
+                                matchFound = true;
+                                let highlightedText = originalText.replace(new RegExp(`(${searchTerm})`, "gi"), `<mark text-black font-bold">$1</mark>`);
+                                cell.innerHTML = highlightedText; // Highlight matching text
+                            } else {
+                                cell.innerHTML = originalText; // Reset to original text
+                            }
+                        });
+            
+                        row.style.display = matchFound || searchTerm === "" ? "" : "none"; // Show all rows when search is empty
+                    });
+                });
+            </script>
+            
+        </div>
+        <% } %>
+    </div>
+</main>
