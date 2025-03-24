@@ -1,0 +1,61 @@
+<%- include('layout') %>
+
+
+
+
+<body>
+    <main class="w-full bg-zinc-600 h-screen p-5 flex flex-col justify-center items-center">
+        
+        <form action="/edit-profile" method="POST" enctype="multipart/form-data" class="bg-zinc-100 w-[500px] h-fit p-5 flex flex-col justify-center items-center gap-5">
+        
+            <h2 class="text-lg font-bold text-center">
+                Edit Profile <span class="text-purple-600"><i class="fas fa-book-reader mr-2"></i> Library</span>
+            </h2>
+
+            <!-- Display Profile Picture -->
+            <% if (user.profile_picture) { %>
+                <img src="/uploads/<%= user.profile_picture %>" alt="Profile Picture" class="w-[100px] h-[100px] border border-zinc-400 rounded-full">
+            <% } else { %>
+                <img src="/default-avatar.png" alt="Default Profile Picture" class="w-[100px] h-[100px] border border-zinc-400 rounded-full">
+            <% } %>
+
+            <!-- Name Input -->
+            <input class="w-full p-2 outline-none rounded-md border border-gray-300" type="text" name="name" value="<%= user.name %>" required>
+
+            <!-- Email Input -->
+            <input class="w-full p-2 outline-none rounded-md border border-gray-300" type="email" name="email" value="<%= user.email %>" required>
+
+            <!-- Profile Picture Upload Section -->
+            <div class="w-full flex justify-start gap-3 items-center font-semibold">
+                <label for="profilePicture" class="cursor-pointer flex gap-2 items-center text-zinc-900">
+                    <i class="fa-solid fa-image"></i> change
+                </label>
+                <!-- Remove Profile Picture -->
+                <% if (user.profile_picture) { %>
+                    <a href="/users/delete-profile-picture" class="text-rose-500 flex gap-2 items-center">
+                        <i class="fa-solid fa-image text-zinc-900"></i> remove
+                    </a>
+                <% } %>
+            </div>
+
+            <!-- Hidden File Input -->
+            <input class="hidden" type="file" id="profilePicture" name="profilePicture">
+
+            <!-- Submit Button -->
+             <div class="flex justify-between text-[16px] items-center w-full gap-5">
+
+                 <button type="submit" class="w-[50%] p-2 bg-purple-600 rounded-md hover:bg-lime-600 duration-300 text-white">
+                     Update Profile
+                 </button>
+                <a href="/dashboard" class="w-[50%]  p-2 bg-purple-600 text-center rounded-md hover:bg-lime-600 duration-300 text-white">
+                   Cancel
+                </a>
+             </div>
+        </form>
+    
+        <!-- Back to Dashboard -->
+         <a href="/dashboard" class="rounded-md bg-black p-3 border hover:border-black text-white mt-3 hover:text-black hover:bg-white duration-300">
+            <i class="fa-solid fa-people-pulling "></i>            <span> Back to Dashboard</span>
+    </a>
+    </main>
+</body>

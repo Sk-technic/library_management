@@ -1,0 +1,15 @@
+<main class="w-full p-4 bg-white ">
+    <!-- <%= console.log("breadcrumb route: ",route)%> -->
+
+
+        <span>
+            <a href="/" class="text-xl underline">HOME</a> /
+            <% if (route === "dashboard") { %>
+                <a href="/dashboard/addbooks" class="text-md  text-purple-600">Add Books</a>
+            <% } else if (route === "getBooks") { %>
+                <a href="/dashboard/addbooks" class="text-md text-purple-600">Add Books</a>
+            <% } else { %>
+                <a href="/dashboard" class="text-md text-purple-600">Back to Dashboard</a>
+            <% } %>
+        </span>
+</main>

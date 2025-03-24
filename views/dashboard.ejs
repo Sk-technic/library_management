@@ -1,0 +1,400 @@
+<%- include('layout') %>
+
+
+
+<% if(user.role === 'librarian'){ %>
+    <%- include('breadcumb') %>
+
+    <% } %>
+<body class="bg-gray-100 mt-20">
+
+
+   
+       
+   
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+        <main class="relative flex p-1  <%= user.role === 'librarian' ? 'h-[555px]' : 'h-[620px]' %> w-full  justify-center items-center gap-3">
+            <% if (user.role === 'student') { %>
+            <section class="flex flex-col w-[75%] h-full bg-white">
+               <% console.log("student user details: ", user) %>
+               <% console.log("student books details: ", borrowedBooks) %>
+
+
+                    <div class="flex flex-col h-full justify-center text-black items-center ">
+                        <div class="relative flex justify-center items-center w-full  pl-2 py-2">
+
+                            <h2 class="absolute top-2 left-2  ">Welcome! <span><%= user.name%></span> </h2>
+                                
+                                <span class=" text-lg text-purple-600"><i class="fas fa-book-reader"></i> library <span class="text-black">Management</span></span>
+                        </div>
+
+                       
+                        <main class="w-full h-full bg-gray-200 flex flex-col items-center py-2 px-3">
+
+                            <!-- Borrowed Books Table -->
+                            <div class="bg-white shadow-lg rounded-lg p-3 w-full overflow-hidden">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h2 class="text-xl w-[40%] font-bold text-gray-800">Borrowed Books</h2>
+                                    <div id="searchButton" class="group hover:cursor-pointer relative w-[30%] transition-all duration-1000 hover:w-[40%]">
+                                        <div class="border-2 border-gray-200 text-md text-zinc-700 bg-white  flex justify-between rounded-full items-center py-2 transition-all duration-300 group-hover:shadow-lg group-focus-within:border-purple-600">
+                                            <input type="text" id="searchInput" class="ml-5 outline-none w-full px-2 border-none bg-transparent transition-all duration-300 focus:w-72" 
+                                            placeholder="Search by title, author, ISBN, or status...">
+                                            <i class="fa-solid fa-magnifying-glass text-gray-400 transition-transform duration-300 mr-5 group-hover:scale-110 group-hover:text-purple-600"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <script>
+                                    function filterTable() {
+                                        let filter = document.getElementById('searchInput').value.toLowerCase();
+                                        let rows = document.querySelectorAll('#booksTable tr');
+                                
+                                        rows.forEach(row => {
+                                            let matchFound = false;
+                                            row.querySelectorAll('td').forEach(cell => {
+                                                let text = cell.textContent.toLowerCase();
+                                                if (text.includes(filter) && filter !== '') {
+                                                    matchFound = true;
+                                                    let regex = new RegExp(`(${filter})`, 'gi');
+                                                    cell.innerHTML = cell.textContent.replace(regex, '<span style="background-color: yellow; color: black;">$1</span>');
+                                                } else {
+                                                    cell.innerHTML = cell.textContent;
+                                                }
+                                            });
+                                
+                                            // Show all rows if input is empty, otherwise filter them
+                                            row.style.display = (filter === '' || matchFound) ? '' : 'none';
+                                        });
+                                    }
+                                
+                                    document.getElementById('searchButton').addEventListener('click', filterTable);
+                                    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+                                </script>
+                                
+                                <% if (borrowedBooks.length > 0) { %>
+                                    <div class="overflow-y-auto h-[470px]">
+                                       
+                                        
+                                        <div class="overflow-y-auto h-[470px]">
+                                            <table class="w-full border-collapse border border-gray-300">
+                                                <thead class="bg-gray-200 sticky top-0 z-10">
+                                                    <tr>
+                                                        <th class="border border-gray-300 px-4 py-2">Sr. No</th>
+                                                        <th class="border border-gray-300 px-4 py-2">Title</th>
+                                                        <th class="border border-gray-300 px-4 py-2">Author</th>
+                                                        <th class="border border-gray-300 px-4 py-2">ISBN</th>
+                                                        <th class="border border-gray-300 px-4 py-2">Borrow Date</th>
+                                                        <th class="border border-gray-300 px-4 py-2">Return Date</th>
+                                                        <th class="border border-gray-300 px-4 py-2">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="booksTable">
+                                                    <% borrowedBooks.forEach((book, index) => { %>
+                                                        <tr class="text-center odd:bg-gray-100 even:bg-white">
+                                                            <td class="border border-gray-300 px-4 py-2"><%= index + 1 %></td>
+                                                            <td class="border border-gray-300 px-4 py-2" data-title><%= book.title %></td>
+                                                            <td class="border border-gray-300 px-4 py-2" data-author><%= book.author %></td>
+                                                            <td class="border border-gray-300 px-4 py-2" data-isbn><%= book.isbn %></td>
+                                                            <td class="border border-gray-300 px-4 py-2"><%= new Date(book.borrow_date).toLocaleDateString() %></td>
+                                                            <td class="border border-gray-300 font-semibold px-4 py-2 <%= book.status === 'returned' ? 'text-lime-600' : 'text-red-600' %>">
+                                                                <%= new Date(book.return_date).toLocaleDateString() %>
+                                                            </td>
+                                                            <td class="border border-gray-300 font-semibold px-4 py-2 <%= book.status === 'returned' ? 'text-lime-600' : 'text-red-600' %>" data-status>
+                                                                <%= book.status %>
+                                                            </td>
+                                                        </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    
+                                        
+                                    </div>
+                                <% } else { %>
+                                    <p class="text-center text-gray-600">No borrowed books found.</p>
+                                <% } %>
+                            </div>
+                    
+                        </main>
+                        
+                        
+                    </div>
+                </section>
+            <% } else if (user.role === 'librarian') { %>
+            <section class="flex flex-col w-[75%] h-full">
+
+                <!-- Dashboard Content -->
+                <div class=" w-full p-5 flex justify-between items-center gap-3  bg-white">
+                    <h1 class="text-2xl font-bold">Library Management Dashboard</h1>
+                    <div class="flex justify-center items-center w-fit h-fit gap-1">
+                    
+                    <p class="text-md font-thin">Role: <%= user.role %></p>
+                    /
+                    <p class="text-md font-thin text-purple-700"><%= user.name %></p>
+                </div>
+            </div>
+            <div class=" h-full shadow-lg <%= route === 'dashboard' ? 'overflow-y-auto' : 'overflow-none' %>  flex flex-col items-center  ">
+                
+                   
+                    
+                    <% if (route === "dashboard") { %>
+            <!-- User Table -->
+          
+            <table class="w-full border-collapse border border-gray-300 shadow-sm rounded-lg">
+                <thead class="sticky top-0 bg-purple-600 text-white">
+                    <tr class="text-left">
+                        <th class="py-3 px-4">Stu_id</th>
+                        <th class="py-3 px-4">Profile</th>
+                        <th class="py-3 px-4">Name</th>
+                        <th class="py-3 px-4">Email</th>
+                        <th class="py-3 px-4">Role</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Action</th>
+                        <th class="py-3 px-4">books-allot</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white h-full" id="userTableBody">
+                    <% if (users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <tr class="border-b hover:bg-gray-200 transition">
+                                <td class="py-3 px-4"><%= user.id %></td>
+                                <td class="py-3 px-4">
+                                    <img src="/uploads/<%= user.profile_picture || 'dummy_profile.jpg' %>" 
+                                         alt="Profile Picture" 
+                                         class="w-12 h-12 rounded-full border object-cover">
+                                </td>
+                                <td class="py-3 px-4 search-column"><%= user.name %></td>
+                                <td class="py-3 px-4 search-column"><%= user.email %></td>
+                                <td class="py-3 px-4 search-column">
+                                    <span class="px-3 py-1 hover:cursor-default <%= user.role === 'librarian' ? 'text-lime-600' : 'text-sky-600' %>">
+                                        <%= user.role %>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <% if (session.user && session.user.id === user.id) { %>
+                                        <span class="text-green-600 font-semibold">Active</span>
+                                    <% } else { %>
+                                        <span class="text-red-600 font-semibold">InActive</span>
+                                    <% } %>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <% if (user.role === 'student') { %>
+                                        <a href="/delete-student/<%= user.id %>" class="text-sky-600">
+                                            <i class="fa-solid fa-eraser w-fit text-2xl"></i>
+                                        </a>
+                                    <% } else if (user.role === 'librarian') { %>
+                                        <span class="text-zinc-600">
+                                            <i class="fa-solid fa-user text-2xl"></i>
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <% if (user.role === 'student') { %>
+                                        <a href="/borrow-details/<%= user.id %>" class="text-zinc-700 text-2xl">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                    <% } else if (user.role === 'librarian') { %>
+                                        <span class="w-full flex justify-start items-center">
+                                            <i class="fa-solid fa-lock text-2xl"></i>
+                                        </span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="8" class="text-center py-5">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+       
+            
+                        <% } else if (route === "addbooks") { %>
+                            
+                            <%= user.profile_picture ? console.log("yes") : console.log("no") %>
+                            <!-- Add Book Form -->
+                    <div class="w-full shadow-lg h-full bg-white">
+                        
+                        <h2 class="text-lg font-bold p-3 ml-2">Add Books <span class="text-purple-600"><i class="fas fa-book-reader"></i> library</span></h2>
+                        <form action="/add-book" method="POST" enctype="multipart/form-data" class="grid grid-cols-2 gap-5 bg-white p-5 h-fit w-full">
+                            
+                            <input type="text" name="title" placeholder="Book Title" required class="mb-2 p-2 border rounded">
+                            <input type="text" name="author" placeholder="Author Name" required class="mb-2 p-2 border rounded">
+                            <!-- <input type="text" name="genre" placeholder="Genre" class="mb-2 p-2 border rounded"> -->
+                            <select id="genre" name="genre" class="mb-2 p-2  border rounded">
+                                <option value="" class="text-zinc-300" disabled selected>Select a genre</option>
+                                
+                                <!-- General Categories -->
+                                <optgroup label="General Genres">
+                                    <option name="genre" value="fiction">Fiction</option>
+                                    <option name="genre" value="non-fiction">Non-Fiction</option>
+                                    <option name="genre" value="mystery">Mystery</option>
+                                    <option name="genre" value="fantasy">Fantasy</option>
+                                    <option name="genre" value="science-fiction">Science Fiction</option>
+                                    <option name="genre" value="biography">Biography</option>
+                                    <option name="genre" value="history">History</option>
+                                    <option name="genre" value="self-help">Self-Help</option>
+                                    <option name="genre" value="romance">Romance</option>
+                                    <option name="genre" value="horror">Horror</option>
+                                </optgroup>
+                                
+                                <!-- College/School Library Categories -->
+                                <optgroup label="Academic & Educational">
+                                    <option name="genre" value="mathematics">Mathematics</option>
+                                    <option name="genre" value="physics">Physics</option>
+                                    <option name="genre" value="chemistry">Chemistry</option>
+                                    <option name="genre" value="biology">Biology</option>
+                                    <option name="genre" value="computer-science">Computer Science</option>
+                                    <option name="genre" value="engineering">Engineering</option>
+                                    <option name="genre" value="medicine">Medicine</option>
+                                    <option name="genre" value="law">Law</option>
+                                    <option name="genre" value="business">Business & Management</option>
+                                    <option name="genre" value="economics">Economics</option>
+                                    <option name="genre" value="psychology">Psychology</option>
+                                    <option name="genre" value="education">Education</option>
+                                    <option name="genre" value="political-science">Political Science</option>
+                                    <option name="genre" value="literature">Literature</option>
+                                </optgroup>
+                            </select>
+
+                            <input type="text" name="isbn" placeholder="ISBN Number" required class="mb-2 p-2 border rounded">
+                            <input type="number" name="publication_year" placeholder="Publication Year" class="mb-2 p-2 border rounded">
+                            <input type="text" name="publisher" placeholder="Publisher" class="mb-2 p-2 border rounded">
+                            <input type="number" name="copies_available" placeholder="Quantity" required class="mb-2 p-2 border rounded">
+                            
+                            <!-- Fix: Ensure file upload works -->
+                             <label for="coverimages" class="mb-2 p-2 border rounded">Add cover image
+                                 <i class="fa-solid fa-image"></i>
+                             </label>
+                             <input type="file" name="cover_image" id="coverimages" accept="image/*" class="hidden mb-2 p-2 border rounded">
+                             
+                             <button type="submit" class="bg-purple-600 duration-300 border-2  hover:bg-white hover:text-purple-800 hover:border-purple-500 text-white p-4 rounded">
+                                 Add Book
+                                </button>
+                            <a href="/getBooks" class="items-center flex justify-center bg-zinc-700 duration-300 hover:bg-white border-2 hover:text-zinc-700 hover:border-zinc-600 text-white text-center p-3 rounded">
+                                View All Books
+                            </a>
+                        </form>
+                        
+                        
+                    </div>
+                    <% } %>
+                </div>
+            </section>
+            
+                <% } %>
+            
+            
+            <!-- profile section.. -->
+            <div class="h-full bg-zinc-100 shadow-md rounded-sm  w-[25%]">
+                <% if(user.role === 'librarian') { %>
+                    <h1 class="text-2xl font-bold bg-zinc-800 py-2 text-white text-center">Library Management Dashboard</h1>
+
+                    <% } else{ %>
+                        <h1 class="text-2xl font-bold bg-zinc-800 py-2 text-white text-center">Student Profile Dashboard</h1>
+
+                        <% }  %>
+            <!-- User Profile Section -->
+            <div class=" space-y-3 p-5">
+                <h2 class="text-xl font-semibold">User Profile</h2>
+                <% if (user.profile_picture) { %>
+                    <img src="uploads/<%=user.profile_picture%>" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover">
+                    <% } else { %>
+                        <img src="uploads/dummy_profile.jpg" alt="Default Profile Picture" class="w-20 border h-20 rounded-full object-cover">
+                        <% } %>
+                        <p><i class="fa-solid fa-circle-user"></i> User : <%= user.name %></p>
+                        <p><i class="fa-solid fa-envelope"></i> Email : <%= user.email %></p>
+                        <p><% if(user.role === 'librarian') { %>
+                            <i class="fa-solid fa-user-tie"></i>
+                            <% }else { %>
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <% } %>
+                            
+                             Role : <%= user.role %></p>
+                        <p><i class="fa-solid fa-calendar"></i> Create_at : <%= (user.created_at) %></p>
+
+                        
+                    </div>
+                    <div class="flex w-fit justify-center gap-2 px-5 mb-4">
+                        
+                        
+                        
+                        <a href="/logout" class=" text-[14px] font-semibold text-red-600 border border-red-700 rounded-sm px-2 bg-white hover:bg-red-600 hover:text-white duration-300">
+                            <i class="fa-solid fa-right-from-bracket"></i>   logout
+                        </a>
+                    </div>
+                    
+                    <!-- Books Section -->
+                    
+                    <% if (user.role === 'student') { %>
+                        <div class="w-full flex flex-col justify-center items-center gap-3 mt-3 px-5">
+                            
+                            <a href="library-books"            class="w-full bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-xs text-white flex justify-center items-center gap-2 rounded"><i class="fa-solid fa-eye"></i> <span>View All Books</span></a>
+                            <a href="/edit-profile" class="w-full bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-xs text-white flex justify-center items-center gap-2 rounded"><i class="fa-solid fa-user-pen"></i> Edit Profile</a>
+                        </div>
+
+            
+                        
+                        
+                        <% } else if (user.role === 'librarian') { %>
+                            <div class="">
+                    
+                   
+                    <div class="grid grid-cols-2 grid-rows-2 gap-3 px-5">
+                        <a href="/books-allot"        class="bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-white rounded text-center text-xs text-white flex justify-center items-center">Allot Book</a>
+                        <a href="/borrow-details-all" class="bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-xs text-white flex justify-center items-center rounded">View All Borrowed Books</a>
+                        <a href="/getBooks" class="bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-xs text-white flex justify-center items-center rounded">View All Books</a>
+                        <a href="/edit-profile" class="bg-zinc-800 hover:bg-zinc-100 hover:text-black duration-500 border hover:border-zinc-600 text-center px-1 py-2 font-semibold text-xs text-white flex justify-center items-center gap-2 rounded"><i class="fa-solid fa-user-pen"></i> Edit Profile</a>
+                        
+                    </div>
+
+               
+                    
+                    <div id="searchButton" class="group hover:cursor-pointer relative w-[50%] transition-all duration-1000 hover:w-[90%] mt-4 mx-5">
+                        <div class="border-2 border-gray-200 text-md text-zinc-700 bg-white  flex justify-between rounded-full items-center py-2 transition-all duration-500 group-hover:shadow-lg group-focus-within:border-purple-600">
+                            <input type="text"  id="userSearch"  class="ml-5 outline-none w-full px-2 border-none bg-transparent transition-all duration-300 " 
+                            placeholder="Search users..." >
+                            <i class="fa-solid fa-magnifying-glass text-gray-400 transition-transform duration-300 mr-5 group-hover:scale-110 group-hover:text-purple-600"></i>
+                        </div>
+                    </div>
+                    <script>
+                        document.getElementById("userSearch").addEventListener("keyup", function () {
+                            let searchTerm = this.value.toLowerCase();
+                            let rows = document.querySelectorAll("#userTableBody tr");
+                    
+                            rows.forEach(row => {
+                                let columns = row.querySelectorAll(".search-column"); // Get only Title, Genre, and Year columns
+                                let matchFound = false;
+                    
+                                columns.forEach(cell => {
+                                    let originalText = cell.getAttribute("data-original") || cell.innerText; // Store original text if not already set
+                                    cell.setAttribute("data-original", originalText); 
+                    
+                                    let lowerText = originalText.toLowerCase();
+                                    
+                                    if (searchTerm && lowerText.includes(searchTerm)) {
+                                        matchFound = true;
+                                        let highlightedText = originalText.replace(new RegExp(`(${searchTerm})`, "gi"), `<mark text-black font-bold">$1</mark>`);
+                                        cell.innerHTML = highlightedText; // Highlight matching text
+                                    } else {
+                                        cell.innerHTML = originalText; // Reset to original text
+                                    }
+                                });
+                    
+                                row.style.display = matchFound || searchTerm === "" ? "" : "none"; // Show all rows when search is empty
+                            });
+                        });
+                    </script>
+                  
+ 
+                    <% } %>
+                </div>
+            </div>
+        
+    </main>
+</body>
+</html>

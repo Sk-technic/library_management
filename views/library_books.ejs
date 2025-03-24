@@ -1,0 +1,100 @@
+<%- include('layout') %>
+<div class="w-full flex justify-between items-center px-5 bg-white">
+<div>
+
+    <%- include('breadcumb') %>
+</div>
+    <!-- Search Input -->
+    <div class="group hover:cursor-pointer relative w-[20%] transition-all duration-1000 hover:w-[30%]">
+        <div class="border-2 border-gray-200 text-md text-zinc-700 bg-white  flex justify-between rounded-full items-center py-2 transition-all duration-300 group-hover:shadow-lg group-focus-within:border-purple-600">
+            <input type="text" id="searchInput4" class="ml-5 outline-none w-full px-2 border-none bg-transparent transition-all duration-300 focus:w-72" 
+            placeholder="Search by Title, Genre, or Year...">
+            <i class="fa-solid fa-magnifying-glass text-gray-400 transition-transform duration-300 mr-5 group-hover:scale-110 group-hover:text-purple-600"></i>
+        </div>
+    </div>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+</head>
+<body >
+    <div class="w-full h-[550px] overflow-y-auto bg-white  ">
+
+<!-- Table -->
+<table class="w-full border-collapse border border-gray-300 rounded-lg shadow-lg bg-white text-sm">
+    <thead class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 sticky top-0 text-white">
+        <tr class="text-left text-xs font-semibold uppercase">
+            <th class="p-5">no:</th>
+            <th class="p-5">Title</th>
+            <th class="p-5">Cover</th>
+            <th class="p-5">Author</th>
+            <th class="p-5">Genre</th>
+            <th class="p-5">ISBN</th>
+            <th class="p-5">Year</th>
+            <th class="p-5">Publisher</th>
+            <th class="p-5">Copies</th>
+            <th class="p-5">Added On</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody" class="divide-y divide-gray-200">
+        <% books.forEach((book, index) => { %>
+            <tr class="hover:bg-blue-50 transition-transform duration-300 hover:scale-[1.01]">
+                <td class="px-4 py-3 text-gray-700"><%= index+1 %></td>
+                <td class="px-4 py-3 font-semibold text-gray-900 search-column"><%= book.title %></td>
+                <td class="px-4 py-3">
+                    <% if (book.cover_image) { %>
+                        <img src="<%= book.cover_image %>" alt="Cover" class="h-12 w-12 object-cover rounded-md shadow transition-transform duration-200 hover:scale-110">
+                    <% } else { %>
+                        <span class="text-gray-500">N/A</span>
+                    <% } %>
+                </td>
+                <td class="px-4 py-3 text-gray-700"><%= book.author %></td>
+                <td class="px-4 py-3 text-gray-700 search-column"><%= book.genre %></td>
+                <td class="px-4 py-3 text-gray-700"><%= book.isbn %></td>
+                <td class="px-4 py-3 text-gray-700 search-column"><%= book.publication_year %></td>
+                <td class="px-4 py-3 text-gray-700"><%= book.publisher %></td>
+                <td class="px-4 py-3 text-gray-700"><%= book.copies_available %></td>
+                <td class="px-4 py-3 text-gray-500 text-sm"><%= new Date(book.created_at).toLocaleDateString() %></td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
+
+<script>
+    document.getElementById("searchInput4").addEventListener("keyup", function () {
+        let searchTerm = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#tableBody tr");
+
+        rows.forEach(row => {
+            let columns = row.querySelectorAll(".search-column"); // Get only Title, Genre, and Year columns
+            let matchFound = false;
+
+            columns.forEach(cell => {
+                let originalText = cell.getAttribute("data-original") || cell.innerText; // Store original text if not already set
+                cell.setAttribute("data-original", originalText); 
+
+                let lowerText = originalText.toLowerCase();
+                
+                if (searchTerm && lowerText.includes(searchTerm)) {
+                    matchFound = true;
+                    let highlightedText = originalText.replace(new RegExp(`(${searchTerm})`, "gi"), `<mark text-black font-bold">$1</mark>`);
+                    cell.innerHTML = highlightedText; // Highlight matching text
+                } else {
+                    cell.innerHTML = originalText; // Reset to original text
+                }
+            });
+
+            row.style.display = matchFound || searchTerm === "" ? "" : "none"; // Show all rows when search is empty
+        });
+    });
+</script>
+
+    </div>
+    
+</body>
+</html>
